@@ -82,6 +82,10 @@ class business_info(Resource):
 #         return {'Emails':emails, 'Phone numbers':phone_numbers, 'Addresses':addresses}
 
 
+@app.route('/')
+def index():
+    return "Deployed"
+
 ##-----------------------------------------Main calling ----------------------------------##
-if __name__ == '__main__':
-    app.run(debug=True)
+# if __name__ == '__main__':
+#     app.run(debug=True)
