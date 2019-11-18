@@ -8,42 +8,42 @@ from flask_restplus import Api, Resource, fields
 ##----------------------------------------Initializing the app-------------------------------##
 
 app = Flask(__name__)
-## Setting the blueprint i.e, base url : /spectralapis/api
-# blueprint = Blueprint('api',__name__, url_prefix='/test/api')
+# Setting the blueprint i.e, base url : /spectralapis/api
+blueprint = Blueprint('api',__name__, url_prefix='/test/api')
 
-# ## Making final api from restplus
-# api = Api(blueprint)
-# app.register_blueprint(blueprint)
-
-
-# ##----------------------------- Setting the format for return type for api and crawler ---------------##
-
-# ## this return format is for google api data
-# a_api = api.model('apidata', {'BusinessType': fields.String('BusinessType')})
-# ## this return format is for crawler data
-# #b_api = api.model('crawldata', {'Emails': fields.String('Email'), 'Phone numbers': fields.String('Phone number'), 'Addresses': fields.String('Address')})
-
-# website = ''
+## Making final api from restplus
+api = Api(blueprint)
+app.register_blueprint(blueprint)
 
 
-# ##-------------------------- Defining the url and thier functions ----------------------------------##
+##----------------------------- Setting the format for return type for api and crawler ---------------##
 
-# ## This class is redirecting to "localhost:5000//spectralapis/api/business_info/business_name"
-# @api.route('/business_info/<path:business_type>')
-# class business_info(Resource):
+## this return format is for google api data
+a_api = api.model('apidata', {'BusinessType': fields.String('BusinessType')})
+## this return format is for crawler data
+#b_api = api.model('crawldata', {'Emails': fields.String('Email'), 'Phone numbers': fields.String('Phone number'), 'Addresses': fields.String('Address')})
 
-#     ## This marshal will tell the return type and with json key name "api_business_information"
-#     @api.marshal_with(a_api, envelope='api_business_information')
-#     def get(self, business_type):
-
-#         if business_type == 'Restaurant':
-#             BusinessType = 'Restaurant-8001'
-
-#         else:
-#             BusinessType = 'Restaurant-8002'
+website = ''
 
 
-#         return {'BusinessType': BusinessType}
+##-------------------------- Defining the url and thier functions ----------------------------------##
+
+## This class is redirecting to "localhost:5000//spectralapis/api/business_info/business_name"
+@api.route('/business_info/<path:business_type>')
+class business_info(Resource):
+
+    ## This marshal will tell the return type and with json key name "api_business_information"
+    @api.marshal_with(a_api, envelope='api_business_information')
+    def get(self, business_type):
+
+        if business_type == 'Restaurant':
+            BusinessType = 'Restaurant-8001'
+
+        else:
+            BusinessType = 'Restaurant-8002'
+
+
+        return {'BusinessType': BusinessType}
 
         # global website
 
