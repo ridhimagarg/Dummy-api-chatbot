@@ -40,7 +40,7 @@ class business_info(Resource):
     @api.marshal_with(a_api, envelope='api_business_information')
     def get(self, business_type):
 
-        business_type = business_type.toLower()
+        business_type = business_type.lower()
 
         if business_type in dic.keys():
             BusinessType = dic[business_type]
