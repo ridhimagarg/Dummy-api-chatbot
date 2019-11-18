@@ -34,7 +34,7 @@ class business_info(Resource):
 
     ## This marshal will tell the return type and with json key name "api_business_information"
     @api.marshal_with(a_api, envelope='api_business_information')
-    def post(self, business_type):
+    def get(self, business_type):
 
         if business_type == 'Restaurant':
             BusinessType = 'Restaurant-8001'
