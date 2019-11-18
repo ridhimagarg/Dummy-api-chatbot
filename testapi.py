@@ -4,6 +4,10 @@ from flask_restplus import Api, Resource, fields
 # import requests
 # import json
 
+dic = {'restaurant':['Hotel & salespersons, drivers-all other than restaurant employees- 1549', 'Hotel and restaurant kitchen equipment manufacturing-sheet metal - 1550', 'Hotel-restaurant employees - 1551', 'Hothouse erection-all operations - 1552'],
+        'florist': ['Store: florist - 2805', 'Farm-florist - 1190', 'Florist-farm- - 1298', 'Florist-store- - 1299'],
+        'air conditioning': ['Air conditioners-portable-installation, service or repair-residential - 33', 'Air conditioning filter media manufacturing-nonwoven - 34', 'Air conditioning parts store -35']}
+
 
 ##----------------------------------------Initializing the app-------------------------------##
 
@@ -36,11 +40,13 @@ class business_info(Resource):
     @api.marshal_with(a_api, envelope='api_business_information')
     def get(self, business_type):
 
-        if business_type == 'Restaurant':
-            BusinessType = 'Restaurant-8001'
+        business_type = business_type.toLower()
+
+        if business_type in dic.keys():
+            BusinessType = dic[business_type]
 
         else:
-            BusinessType = 'Restaurant-8002'
+            BusinessType = 'Sorry, I can not find a corresponding business type, please re-try with another keyword or class code '
 
 
         return {'BusinessType': BusinessType}
