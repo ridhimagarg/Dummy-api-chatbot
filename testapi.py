@@ -84,6 +84,12 @@ class business_info(Resource):
             Website = dic1[data_in]['Website']
             AdditionalBusinessOperation = dic1[data_in]['Additional Business Operation']
 
+        else:
+            Name = ''
+            Phone =''
+            Address =''
+            Website = ''
+            AdditionalBusinessOperation = ''
 
         ## returning data in the form mentioend in b_api
         return {'Name':Name, 'Phone':Phone, 'Address':Address, 'Website': Website, 'Additional Business Operation': AdditionalBusinessOperation }
