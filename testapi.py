@@ -9,6 +9,8 @@ dic = {'restaurant':['Hotel & salespersons, drivers-all other than restaurant em
         'air conditioning': ['Air conditioners-portable-installation, service or repair-residential - 33', 'Air conditioning filter media manufacturing-nonwoven - 34', 'Air conditioning parts store -35']}
 
 
+dic1 = {'12345678940213food': {'Name':'Pizza hut', 'Address': '1900 Colonel Sanders Ln, Louisville, KY', 'Phone': '502-874-8300', 'Website':'www.pizzahut.com', 'Additional Business Operations': 'None'}}
+
 ##----------------------------------------Initializing the app-------------------------------##
 
 app = Flask(__name__)
@@ -25,7 +27,7 @@ app.register_blueprint(blueprint)
 ## this return format is for google api data
 a_api = api.model('apidata', {'BusinessType': fields.List(fields.String('BusinessType'))})
 ## this return format is for crawler data
-#b_api = api.model('crawldata', {'Emails': fields.String('Email'), 'Phone numbers': fields.String('Phone number'), 'Addresses': fields.String('Address')})
+b_api = api.model('crawldata', {'Name': fields.String('Name'), 'Phone': fields.String('Phone'), 'Address': fields.String('Address'), 'Website': fields.String('Website'), 'Additional Business Operations' : fields.String('Additional Business Operations')})
 
 website = ''
 
@@ -37,7 +39,7 @@ website = ''
 class business_info(Resource):
 
     ## This marshal will tell the return type and with json key name "api_business_information"
-    @api.marshal_with(a_api, envelope='api_business_information')
+    @api.marshal_with(a_api, envelope='api_business_type')
     def get(self, business_type):
 
         business_type = business_type.lower()
@@ -66,26 +68,25 @@ class business_info(Resource):
 
 
 ## This class is redirecting to "localhost:5000//spectralapis/api/business_info/business_name/crawler/website_url"
-# @api.route('/business_info/crawler/<path:web>')
-# class business_info(Resource):
+@api.route('/business_info/<path:fein>/<path:zip>/<path:natureofbusiness>')
+class business_info(Resource):
 
-#     ## This marshal will tell the return type and with json key name "crawl_business_information"
-#     @api.marshal_with(b_api, envelope='crawl_business_information')
-#     def get(self, web):
+    ## This marshal will tell the return type and with json key name "crawl_business_information"
+    @api.marshal_with(b_api, envelope='api_business_information')
+    def get(self, fein, zip, natureofbusiness):
 
-#         if 'http' not in web:
-#             web = 'http://'+web 
-        
-#         ## Calling the crawler utitlity for getting information for business name
-#         emails, phone_numbers, addresses = uc.get_information(web)
+        data_in =  fein + zip + natureofbusiness
 
-#         ## getting information in the form of list
-#         emails = list(set(emails))
-#         phone_numbers = list(set(phone_numbers))
-#         addresses = list(set(addresses))
+        if data_in in dic1.keys():
+            Name = dic1[data_in]['Name']
+            Phone = dic1[data_in]['Phone']
+            Address = dic1[data_in]['Address']
+            Website = dic1[data_in]['Website']
+            AdditionalBusinessOperation = dic1[data_in]['Additional Business Operation']
 
-#         ## returning data in the form mentioend in b_api
-#         return {'Emails':emails, 'Phone numbers':phone_numbers, 'Addresses':addresses}
+
+        ## returning data in the form mentioend in b_api
+        return {'Name':Name, 'Phone':Phone, 'Address':Address, 'Website': Website, 'Additional Business Operation': Additional Business Operation }
 
 
 @app.route('/')
