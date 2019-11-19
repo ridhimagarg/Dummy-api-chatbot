@@ -23,7 +23,7 @@ app.register_blueprint(blueprint)
 ##----------------------------- Setting the format for return type for api and crawler ---------------##
 
 ## this return format is for google api data
-a_api = api.model('apidata', {'BusinessType': fields.String('BusinessType')})
+a_api = api.model('apidata', {'BusinessType': fields.List('BusinessType')})
 ## this return format is for crawler data
 #b_api = api.model('crawldata', {'Emails': fields.String('Email'), 'Phone numbers': fields.String('Phone number'), 'Addresses': fields.String('Address')})
 
