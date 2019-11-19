@@ -23,7 +23,7 @@ app.register_blueprint(blueprint)
 ##----------------------------- Setting the format for return type for api and crawler ---------------##
 
 ## this return format is for google api data
-a_api = api.model('apidata', {'BusinessType': fields.List('BusinessType')})
+a_api = api.model('apidata', {'BusinessType': fields.List(fields.String('BusinessType'))})
 ## this return format is for crawler data
 #b_api = api.model('crawldata', {'Emails': fields.String('Email'), 'Phone numbers': fields.String('Phone number'), 'Addresses': fields.String('Address')})
 
@@ -46,7 +46,7 @@ class business_info(Resource):
             BusinessType = dic[business_type]
 
         else:
-            BusinessType = 'Sorry, I can not find a corresponding business type, please re-try with another keyword or class code '
+            BusinessType = ['Sorry, I can not find a corresponding business type, please re-try with another keyword or class code ']
 
 
         return {'BusinessType': BusinessType}
