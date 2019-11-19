@@ -46,7 +46,7 @@ class business_info(Resource):
             BusinessType = dic[business_type]
 
         else:
-            BusinessType = ['Sorry, I can not find a corresponding business type, please re-try with another keyword or class code ']
+            BusinessType = []
 
 
         return {'BusinessType': BusinessType}
