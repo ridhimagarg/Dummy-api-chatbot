@@ -86,7 +86,7 @@ class business_info(Resource):
 
 
         ## returning data in the form mentioend in b_api
-        return {'Name':Name, 'Phone':Phone, 'Address':Address, 'Website': Website, 'Additional Business Operation': Additional Business Operation }
+        return {'Name':Name, 'Phone':Phone, 'Address':Address, 'Website': Website, 'Additional Business Operation': AdditionalBusinessOperation }
 
 
 @app.route('/')
