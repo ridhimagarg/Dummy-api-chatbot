@@ -9,7 +9,7 @@ dic = {'restaurant':['Hotel & salespersons, drivers-all other than restaurant em
         'air conditioning': ['Air conditioners-portable-installation, service or repair-residential - 33', 'Air conditioning filter media manufacturing-nonwoven - 34', 'Air conditioning parts store -35']}
 
 
-dic1 = {'123456789': {'Name':'Pizza hut', 'Address': '1900 Colonel Sanders Ln, Louisville, KY', 'Phone': '502-874-8300', 'Website':'www.pizzahut.com', 'Additional Business Operations': 'None'}}
+dic1 = {'12345678942013food': {'Name':'Pizza hut', 'Address': '1900 Colonel Sanders Ln, Louisville, KY', 'Phone': '502-874-8300', 'Website':'www.pizzahut.com', 'Additional Business Operations': 'None'}}
 
 ##----------------------------------------Initializing the app-------------------------------##
 
@@ -75,7 +75,7 @@ class business_info(Resource):
     @api.marshal_with(b_api, envelope='api_business_information')
     def get(self, fein, zip, natureofbusiness):
 
-        data_in =  fein
+        data_in =  fein + zip + natureofbusiness
 
         if data_in in dic1.keys():
 
@@ -101,5 +101,5 @@ def index():
     return "Deployed"
 
 ##-----------------------------------------Main calling ----------------------------------##
-# if __name__ == '__main__':
-#     app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
