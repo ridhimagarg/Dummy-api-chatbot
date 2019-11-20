@@ -104,7 +104,7 @@ class business_info(Resource):
 
         if data_in in dic2.keys():
 
-            Quoteno = dic2[str(data_in)]['QuoteNo']
+            Quoteno = dic2[str(data_in)]
 
         else:
             Quoteno = ''
