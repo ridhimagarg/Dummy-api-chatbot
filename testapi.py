@@ -43,7 +43,7 @@ b_api = api.model('crawldata', {'Name': fields.String('Name'), 'Phone': fields.S
 
 c_api = api.model('Quoteavailable', {'Quoteno': fields.String('Quoteno')})
 
-d_api = api.model('activities', {'Activities': fields.List(fields.String('Activities'))})
+d_api = api.model('Activities', {'Activities': fields.List(fields.String('Activities'))})
 
 ##-------------------------- Defining the url and thier functions ----------------------------------##
 
@@ -117,7 +117,7 @@ class business_info(Resource):
         return {'Quoteno': Quoteno}
 
 
-@api.route('/business_info/activities/<path:bussinesstype>')
+@api.route('/business_info/activities/<path:business_type>')
 class business_info(Resource):
 
     ## This marshal will tell the return type and with json key name "crawl_business_information"
