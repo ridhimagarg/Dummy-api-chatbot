@@ -68,8 +68,8 @@ class business_info(Resource):
 
 
 ## This class is redirecting to "localhost:5000//spectralapis/api/business_info/business_name/crawler/website_url"
-@api.route('/business_info1/fein/<path:fein>/<path:zip>/<path:natureofbusiness>')
-class business_info1(Resource):
+@api.route('/business_info/fein/<path:fein>/<path:zip>/<path:natureofbusiness>')
+class business_info(Resource):
 
     ## This marshal will tell the return type and with json key name "crawl_business_information"
     @api.marshal_with(b_api, envelope='api_business_information')
