@@ -75,15 +75,15 @@ class business_info(Resource):
     @api.marshal_with(b_api, envelope='api_business_information')
     def get(self, fein, zip, natureofbusiness):
 
-        data_in =  str(fein) 
+        data_in =  fein
 
         if data_in in dic1.keys():
 
-            Name = dic1[data_in]['Name']
-            Phone = dic1[data_in]['Phone']
-            Address = dic1[data_in]['Address']
-            Website = dic1[data_in]['Website']
-            AdditionalBusinessOperations = dic1[data_in]['Additional Business Operations']
+            Name = dic1[str(data_in)]['Name']
+            Phone = dic1[str(data_in)]['Phone']
+            Address = dic1[str(data_in)]['Address']
+            Website = dic1[str(data_in)]['Website']
+            AdditionalBusinessOperations = dic1[str(data_in)]['Additional Business Operations']
 
         else:
             Name = ''
