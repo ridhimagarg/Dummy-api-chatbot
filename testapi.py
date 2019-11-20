@@ -131,7 +131,7 @@ class business_info(Resource):
             activities = dic3[str(data_in)]
 
         else:
-            activities = ''
+            activities = []
 
         ## returning data in the form mentioend in b_api
         return {'Activities': activities}
