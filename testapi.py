@@ -10,8 +10,14 @@ dic = {'restaurant':['Hotel & salespersons, drivers-all other than restaurant em
 
 
 dic1 = {'12345678942013food': {'Name':'Pizza hut', 'Address': '1900 Colonel Sanders Ln, Louisville, KY', 'Phone': '502-874-8300', 'Website':'www.pizzahut.com', 'Additional Business Operations': 'None'},
-        '89543215614760florist': {'Name':'Mandys flowers', 'Address': '216 W. State St. Olean, NY  14760', 'Phone': '(716) 373-2526', 'Website':'www.mandysflowers.com', 'Additional Business Operations': 'None'}
+        '89543215614760florist': {'Name':'Mandys flowers', 'Address': '216 W. State St. Olean, NY  14760', 'Phone': '(716) 373-2526', 'Website':'www.mandysflowers.com', 'Additional Business Operations': 'None'},
+        'mandysflowers14760florist': {'Name':'Mandys flowers', 'Address': '216 W. State St. Olean, NY  14760', 'Phone': '(716) 373-2526', 'Website':'www.mandysflowers.com', 'Additional Business Operations': 'None'}
+        
         }
+
+dic2 = {'pizzahutworkerscompensation': ['1234567'],
+        'mandysflowersworkerscompensation': ['8976320']
+}
 
 ##----------------------------------------Initializing the app-------------------------------##
 
@@ -31,7 +37,8 @@ a_api = api.model('apidata', {'BusinessType': fields.List(fields.String('Busines
 ## this return format is for crawler data
 b_api = api.model('crawldata', {'Name': fields.String('Name'), 'Phone': fields.String('Phone'), 'Address': fields.String('Address'), 'Website': fields.String('Website'), 'Additional Business Operations' : fields.String('Additional Business Operations')})
 
-website = ''
+c_api = api.model('Quoteavailable', {'Quoteno': fields.String('Quoteno')})
+
 
 
 ##-------------------------- Defining the url and thier functions ----------------------------------##
@@ -55,19 +62,7 @@ class business_info(Resource):
 
         return {'BusinessType': BusinessType}
 
-        # global website
-
-        # ## Calling the api utitlity for getting information for business name
-        # business_information, website = ugaA.get_details(business_type)
-
-        # ## getting name, address, phone number separately
-        # name = business_information['Name']
-        # formatted_address = business_information['Formatted Address']
-        # phone_number = business_information['Phone number']
-
-        # ## Returning ing the form mentioned in a_api
-        # return {'Name':name, 'Formatted Address':formatted_address, 'Phone number': phone_number, 'Website': website} 
-
+        
 
 ## This class is redirecting to "localhost:5000//spectralapis/api/business_info/business_name/crawler/website_url"
 @api.route('/business_info/fein/<path:fein>/<path:zip>/<path:natureofbusiness>')
@@ -96,6 +91,27 @@ class business_info(Resource):
 
         ## returning data in the form mentioend in b_api
         return {'Name':Name, 'Phone':Phone, 'Address':Address, 'Website': Website, 'Additional Business Operations': AdditionalBusinessOperations }
+
+
+@api.route('/business_info/quoteno/<path:bussinessname>/<path:lob>')
+class business_info(Resource):
+
+    ## This marshal will tell the return type and with json key name "crawl_business_information"
+    @api.marshal_with(c_api, envelope='api_quote_information')
+    def get(self, bussinessname, lob):
+
+        data_in =  bussinessname.lower() + lob.lower()
+
+        if data_in in dic2.keys():
+
+            Quoteno = dic2[str(data_in)]['QuoteNo']
+
+        else:
+            Quoteno = ''
+
+        ## returning data in the form mentioend in b_api
+        return {'Quoteno': Quoteno}
+
 
 
 @app.route('/')
