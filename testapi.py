@@ -19,6 +19,10 @@ dic2 = {'pizzahutworkerscompensation': ['1234567'],
         'mandysflowersworkerscompensation': ['8976320']
 }
 
+dic3 = {'restaurant':['Any seasonal employees?', 'Do employees travel out of state?'],
+        'florist': ['Are employee health plans provided', 'Do you lease employees to or from other employers?'],
+        }
+
 ##----------------------------------------Initializing the app-------------------------------##
 
 app = Flask(__name__)
@@ -39,7 +43,7 @@ b_api = api.model('crawldata', {'Name': fields.String('Name'), 'Phone': fields.S
 
 c_api = api.model('Quoteavailable', {'Quoteno': fields.String('Quoteno')})
 
-
+d_api = api.model('activities', {'Activities': fields.List(fields.String('Activities'))})
 
 ##-------------------------- Defining the url and thier functions ----------------------------------##
 
@@ -112,6 +116,25 @@ class business_info(Resource):
         ## returning data in the form mentioend in b_api
         return {'Quoteno': Quoteno}
 
+
+@api.route('/business_info/activities/<path:bussinesstype>')
+class business_info(Resource):
+
+    ## This marshal will tell the return type and with json key name "crawl_business_information"
+    @api.marshal_with(d_api, envelope='api_activities_information')
+    def get(self, business_type):
+
+        data_in = business_type.lower()
+
+        if data_in in dic3.keys():
+
+            activities = dic3[str(data_in)]
+
+        else:
+            activities = ''
+
+        ## returning data in the form mentioend in b_api
+        return {'Activities': activities}
 
 
 @app.route('/')
