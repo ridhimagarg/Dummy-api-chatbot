@@ -36,7 +36,7 @@ website = ''
 
 ## This class is redirecting to "localhost:5000//spectralapis/api/business_info/business_name"
 @api.route('/business_info/<path:business_type>')
-class business_info(Resource):
+class business_info1(Resource):
 
     ## This marshal will tell the return type and with json key name "api_business_information"
     @api.marshal_with(a_api, envelope='api_business_type')
