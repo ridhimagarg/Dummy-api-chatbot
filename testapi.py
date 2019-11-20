@@ -78,21 +78,22 @@ class business_info(Resource):
         data_in =  str(fein) 
 
         if data_in in dic1.keys():
+
             Name = dic1[data_in]['Name']
             Phone = dic1[data_in]['Phone']
             Address = dic1[data_in]['Address']
             Website = dic1[data_in]['Website']
-            AdditionalBusinessOperation = dic1[data_in]['Additional Business Operation']
+            AdditionalBusinessOperations = dic1[data_in]['Additional Business Operations']
 
         else:
             Name = ''
             Phone =''
             Address =''
             Website = ''
-            AdditionalBusinessOperation = ''
+            AdditionalBusinessOperations = ''
 
         ## returning data in the form mentioend in b_api
-        return {'Name':Name, 'Phone':Phone, 'Address':Address, 'Website': Website, 'Additional Business Operation': AdditionalBusinessOperation }
+        return {'Name':Name, 'Phone':Phone, 'Address':Address, 'Website': Website, 'Additional Business Operations': AdditionalBusinessOperations }
 
 
 @app.route('/')
