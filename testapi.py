@@ -104,6 +104,10 @@ class business_info(Resource):
     @api.marshal_with(c_api, envelope='api_quote_information')
     def get(self, bussinessname, lob):
 
+        bussinessname = bussinessname.strip()
+
+        lob = lob.strip()
+
         data_in =  bussinessname.lower() + lob.lower()
 
         if data_in in dic2.keys():
