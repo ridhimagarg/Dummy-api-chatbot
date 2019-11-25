@@ -128,6 +128,8 @@ class business_info(Resource):
     @api.marshal_with(d_api, envelope='api_activities_information')
     def get(self, business_type):
 
+        business_type = business_type.replace(" ","")
+
         data_in = business_type.lower()
 
         if data_in in dic3.keys():
