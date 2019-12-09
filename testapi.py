@@ -165,7 +165,7 @@ class business_info(Resource):
         name = list_fein[id]
 
         return {
-            //"status": "Person retrieved",
+            ##"status": "Person retrieved",
             "Fein" : list_fein[id]
         }
 
