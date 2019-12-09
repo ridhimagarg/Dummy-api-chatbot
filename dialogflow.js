@@ -13,14 +13,16 @@ const axios = require('axios');
 // xml2js for parsing xml output in response
 const xml2js = require('xml2js');
 
-// Accessing firebase admin
-const admin = require('firebase-admin');
-admin.initializeApp(functions.config().firebase);
+const json = require('json');
 
-const db = admin.firestore();
-db.settings({ timestampsInSnapshots: true });
+// Accessing firebase admin
+//const admin = require('firebase-admin');
+//admin.initializeApp(functions.config().firebase);
+
+//const db = admin.firestore();
+//db.settings({ timestampsInSnapshots: true });
 // Create firestore database and access it using collection and doc
-const dialogflowAgentRef = db.collection('users').doc('agent');
+//const dialogflowAgentRef = db.collection('users').doc('agent');
 
 
 // Variables for global use
@@ -81,7 +83,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
             agent.add('Sorry can you say that again');
         }
         else if (fallbackcount === 2){
-            return agent.add('Sorry, I didnt get it. Please refrase');  
+            return agent.add('Sorry, I didnt get it. Please rephrase');  
         } 
         else{
         // If 'fallbackCount' is greater than 2, send out the final message and terminate the conversation.
@@ -140,7 +142,30 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
         }
         }
         else{
+          
+          	/**if(name == 'hi'){
+            
+            	welcome(agent);
+                const allcontexts = agent.contexts;
+                var i;  
+                  for(i=0; i< allcontexts.length; i++ ){  
+                      if(allcontexts[i].name.toString() != 'defaultwelcomeintent-followup'){
+                          agent.context.set({
+                                  'name':allcontexts[i].name.toString(),
+                                  'lifespan':0
+                          });
+                      }  
+                  }
+              
+               agent.context.set({
+                                  'name':'defaultwelcomeintent-followup',
+                                  'lifespan':1
+                          });
+            }
+          
+          	else{**/
             agent.add('What is the nature of your Business ?');
+           // }  
         }
   
   }
@@ -149,7 +174,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
     function zip(agent){
       
     const zip = agent.parameters.zip;
-    		agent.add(zip.toString());
+    		//agent.add(zip.toString());
     
     		if(zip.toString().length == 5 || zip.toString().length == 7){
               
@@ -157,13 +182,13 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
               
               	const business_nature = parameters.parameters['business-nature'];
               
-                var fein1 = parameters.parameters['fein'];
+                var fein1 = parameters.parameters.fein;
                   
                 if(fein1 == ""){
-                	fein1 = " "
+                	fein1 = " ";
                 }
               
-              	agent.add('http://calm-peak-72227.herokuapp.com/test/api/business_info/fein/'+fein1+'/'+zip+'/'+business_nature);
+              	//agent.add('http://calm-peak-72227.herokuapp.com/test/api/business_info/fein/'+fein1+'/'+zip+'/'+business_nature);
               
               	return axios.get('http://calm-peak-72227.herokuapp.com/test/api/business_info/fein/'+fein1+'/'+zip+'/'+business_nature)
               	.then((result) => {
@@ -210,19 +235,10 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   			const business_nature =  agent.parameters['business-nature'];
       		if(["hi","hello","heya","hey there"].indexOf(business_nature.toLowerCase()) > -1){
                   
-                agent.add('I am Alice, your insurance virtual assistant.');
-                agent.add('How can I help you today? Here are some options you can select:');
-                agent.add(new Suggestion('Request a new quote'));
-                agent.add(new Suggestion('Complete an existing quote'));
-                agent.add(new Suggestion('Lookup a policy or insured'));
-                agent.add(new Suggestion('Bind a completed quote'));
-                agent.add(new Suggestion('Issue a bound quote'));
-                agent.add(new Suggestion('Change or Cancel a Policy'));
-                agent.add(new Suggestion('Check the status of a work item'));
-                agent.add(new Suggestion('Make a Payment ')); 
-                const allcontexts = agent.contexts;
-                agent.add(allcontexts[0].name.toString());
-                var i;  
+             
+              welcome(agent);
+              const allcontexts = agent.contexts;
+              var i;  
                 for(i=0; i< allcontexts.length; i++ ){  
                     if(allcontexts[i].name.toString() != 'defaultwelcomeintent-followup'){
                         agent.context.set({
@@ -236,7 +252,20 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
             }
       
     		else{
-    		agent.add("Please enter Primary Location's Zip Code");
+              
+              /**if(!isNaN(business_nature)){
+                 agent.add('Business Nature cannot be integer');
+                 agent.add('Please enter valid business nature');	
+                 agent.context.set({
+                 	'name': 'fein-followup',
+                   	'lifespan': 1
+                 });	
+              }
+              
+              
+              else{**/
+    			agent.add("Please enter Primary Location's Zip Code");
+             // }
             }    
     }
 
@@ -252,8 +281,9 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   
   
     function nq(agent){
+        
     
-    return dialogflowAgentRef.get()
+    /**return dialogflowAgentRef.get()
       .then(doc => {
 
         if (!doc.exists){
@@ -261,8 +291,11 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
         }
 
         else{
-          agent.add(doc.data().business_name.toString());
-          const business_name = doc.data().business_name;
+          //agent.add(doc.data().business_name.toString());
+          var business_name = doc.data().business_name;
+          if(business_name == ''){
+          	business_name = " ";
+          }
           return axios.get('http://calm-peak-72227.herokuapp.com/test/api/business_info/quoteno/'+business_name+'/workerscompensation')
               .then((result) => {
               console.log(result.data);
@@ -282,10 +315,47 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
 
         return Promise.resolve('Read complete');
       }).catch(() => {
-        agent.add('Error reading Business Name from the Firestore database.');
+        agent.add('We could not find your details');
         agent.add("Anyways. I'd require some business information to get you the best quote.");
         agent.add("Please enter keyword or class code that best describes the primary business for e.g. Florist, Clerical, Pizza Restaurant, Dry Cleaner.");
-      });
+      });**/
+      
+      return axios.post('http://125.63.66.115:9096/AQAPI/api/Policy/GetQuotesSearchBased',
+                       {
+             "UserId": 1,
+             "AgencyId": 0,
+             "AgentId": 1,
+             "Ref": "WCP000014",
+             "InsuredName": "",
+             "Lob": "WC",
+             "AgentName": "",
+             "EffectiveDate": "",
+             "ExpiryDate": "",
+             "TranscationType":
+            "",
+             "Status": "",
+             "PremiumStart": "",
+             "PremiumEnd": "",
+             "AlfredFlags": ""
+            })
+              .then((result) => {
+              console.log(result.data);
+      		    if(!result.data.data){
+                    agent.add("Great. I'd require some business information to get you the best quote.");
+              		agent.add("Please enter keyword or class code that best describes the primary business for e.g. Florist, Clerical, Pizza Restaurant, Dry Cleaner.");
+            	
+                }
+      		else{
+            	agent.add('Okay. I have found an existing Workers Comp Quote for <Business Name>.');
+                agent.add('Do you still want to continue?');
+                agent.add(new Suggestion('Yes'));
+                agent.add(new Suggestion('No'));
+            }
+         });
+      
+     // agent.add("Great. I'd require some business information to get you the best quote.");
+      //        	agent.add("Please enter keyword or class code that best describes the primary business for e.g. Florist, Clerical, Pizza Restaurant, Dry Cleaner.");
+
   
     }
 
@@ -327,7 +397,13 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
            		else{
                     agent.add('Sorry, I cannot find a business type that matches your entry, please re-try with another keyword or class code ');
         	        agent.context.set({
-                        'name':'nq-followup'
+                        'name':'nq-followup',
+                      	'lifespan':1
+                      	
+                    });
+                  	agent.context.set({
+                        'name':'classc-followup',
+                      	'lifespan':0
                     });
                 }
            
@@ -384,18 +460,35 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
         let ystart = start_date.getFullYear();
 
         let ydate = date.getFullYear();
+      
+    	if(isNaN(ystart)){
+			
+          agent.add('Sorry, seems invalid date.(We are providing insurance to companies established after 20th century)');
+          agent.add('If want to continue, please enter valid date');
+          agent.context.set({
+              'name':'numemp-followup',
+              'lifespan':1
+              });
+          
+        }  
+      
+		else{	
+          if(ydate-ystart >0){
 
-        if(ydate-ystart !=0){
+              agent.add('Your business is appxoimately since '+ (ydate-ystart) +' years');
+          }
 
-            agent.add('Your business is appxoimately since '+ (ydate-ystart) +' years');
-        }
+          else if(ydate-ystart ==0){
 
-        else{
-        
-            agent.add('Your business is from few months');
-        }
-        
-        agent.add('OK. What is the total estimated annual payroll for your business? ');
+              agent.add('Your business is from few months');
+          }
+
+          else{
+              agent.add('You have entered some future date for the start of your business');
+          }
+
+          agent.add('OK. What is the total estimated annual payroll for your business? ');
+        }  
   
     }
 
@@ -423,18 +516,50 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
         });
   
     }
+  
+  	function stateyes(agent){
+    	agent.add('Thank you for showing interest with us.');
+		agent.add('We are not providing insurance for these states at this time. Please contact us for more information.');
+      	const allcontexts = agent.contexts;
+      var i;  
+      for(i=0; i< allcontexts.length; i++ ){  
+ 
+          agent.context.set({
+            'name':allcontexts[i].name.toString(),
+            'lifespan':0
+          });
+        
+      }
+    
+    }
 
   
     function activitiesno(agent){
 
         agent.add('Thank you for your response. The estimated  annual premium would range from  "$2000" to "$3000". ');
         agent.add('This fast quote has been emailed to the email registered with your user profile. Please keep Indication ID# NICI001003 for your future reference.');
-        agent.add('Do you want to contiue with this quote and see if we can issue a policy for you?');
+        agent.add('Do you want to continue with this quote and see if we can issue a policy for you?');
         agent.add(new Suggestion('Yes, continue with me'));
         agent.add(new Suggestion('Yes, continue on the AQ website'));
         agent.add(new Suggestion('No')); 
 
 
+    }
+  
+  	function activitiesyes1(agent){
+    
+    	agent.add('Thanks for your response. As your business is involved in $activity operations, we cannot provide insurance for these risks. Please contact us for more information.');
+      	const allcontexts = agent.contexts;
+        var i;  
+        for(i=0; i< allcontexts.length; i++ ){  
+
+            agent.context.set({
+              'name':allcontexts[i].name.toString(),
+              'lifespan':0
+            });
+
+        }
+    
     }
   
  
@@ -548,6 +673,11 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
         agent.add(new Suggestion('Change or Cancel a Policy'));
         agent.add(new Suggestion('Check the status of a work item'));
         agent.add(new Suggestion('Make a Payment '));
+      	agent.context.set({
+                                'name':'defaultwelcomeintent-followup',
+          						'lifespan': 5	
+                        });
+      	
   
     }
 
@@ -557,13 +687,30 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
         agent.add('Great! Let’s learn more about your business so that we can price your policy accurately.');
         agent.add('Please take a moment to confirm the business details below:');
         agent.add('Insured Name: Pizza hut');
-        agent.add('Primary Address: <Street Address, State, City, Zip code>');
-        agent.add('FEIN: <FEIN>');
-        agent.add('NCCI Risk ID: <NCCI Risk ID>');
-        agent.add('Website: <Website>');
+        agent.add('Primary Address: 1900 Colonel Sanders Ln, Louisville, KY');
+        agent.add('FEIN: 123456789');
+        agent.add('NCCI Risk ID: 675432');
+        agent.add('Website: www.pizzahut.com');
         agent.add(new Suggestion('Confirm'));
         agent.add(new Suggestion('Edit'));
 	    
+    }
+  
+  	function meaq(agent){
+    
+      	agent.add('http://www.kmgus.com/');
+      	const allcontexts = agent.contexts;
+        var i;  
+        for(i=0; i< allcontexts.length; i++ ){  
+
+            agent.context.set({
+              'name':allcontexts[i].name.toString(),
+              'lifespan':0
+            });
+
+        }
+      	
+    
     }
 
 
@@ -678,14 +825,25 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
         agent.add(new Suggestion('No'));
     
     }
+  
+
 
   
     function email(agent){
-  
-        agent.add('Thanks. Would you like to provide  office or mobile contact phone number?');
-        agent.add(new Suggestion('Office'));
-        agent.add(new Suggestion('Mobile'));
-        agent.add(new Suggestion('Both'));
+  		
+      	const email = agent.parameters.email;
+      	if(/^\w+([\+\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,})+$/.test(email)){
+          agent.add('Thanks. Would you like to provide  office or mobile contact phone number?');
+          agent.add(new Suggestion('Office'));
+          agent.add(new Suggestion('Mobile'));
+          agent.add(new Suggestion('Both'));
+        } 
+      	else{
+          agent.add('Please enter valid email address');
+          agent.context.set({
+              'name':'contact-followup'
+              });
+        }
   
     }
 
@@ -753,7 +911,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   
     function bussregtype(agent){
   
-        const reg_type = agent.parameters['business_reg_type'];
+        const reg_type = agent.parameters.business_reg_type;
         
         if (reg_type.toString() == 'Other'){
         
@@ -774,6 +932,29 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
         let cov_start_date = new Date(cov_start.toString());
         
         let date = new Date();
+      
+      	//agent.add(cov_start_date.toString());
+      
+      	//agent.add(date.toString());
+      
+      	//agent.add(cov_start_date.getFullYear().toString());
+      
+      	//agent.add(date.getFullYear().toString());
+      
+      	if(isNaN(cov_start_date.getFullYear()) ){
+          
+        agent.add('Sorry, We can only get you a policy that starts from today or later !');
+        agent.add('Please enter some future date');
+        
+        agent.context.set({
+                'name':'bussregdetail-followup'
+                });
+        
+        }
+      
+      	else{
+        
+        
     
         if(cov_start_date < date){
         
@@ -791,6 +972,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
             agent.add(new Suggestion('yes'));
             agent.add(new Suggestion('no'));
         
+        }
         }
   
     }
@@ -821,6 +1003,11 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
             agent.add('Do you have multiple locations?');
             agent.add(new Suggestion('Yes'));
             agent.add(new Suggestion('No'));
+          	agent.context.set({
+                'name':'deductamt-followup',
+              	'lifespan':1
+                });
+          
         }
         
         else{
@@ -844,7 +1031,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   
     function claimnum(agent){
     	
-    	const claims_num = agent.parameters['claims_num'];
+    	const claims_num = agent.parameters.claims_num;
           
   		agent.add('OK. Please let me know the claim details :Carrier Name, Loss Date & Loss Amount of the filed claim# 1');
         agent.add('What was the carrier name?');  
@@ -854,15 +1041,15 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   
     function claimdetailloss(agent){
     
-        const loss_amt = agent.parameters['loss_amt'];
+        const loss_amt = agent.parameters.loss_amt;
         const parameters = agent.context.get('claimnum-followup');
-        var claims_num = parameters.parameters['claims_num'];
+        var claims_num = parameters.parameters.claims_num;
         let i =2;
       
         if ((claims_num-1) != 0){
         
             claims_num = claims_num -1;
-            parameters.parameters['claims_num'] = claims_num ;
+            parameters.parameters.claims_num = claims_num ;
             //agent.add(claims_num.toString());
             agent.context.set({'name': 'claimnum-followup',
                                 'lifespan': 5});
@@ -966,39 +1153,35 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   
   		const classc = agent.parameters['class-code-loc1']; 
     	
-    	if (classc.toString().toLowerCase() == 'restaurant'){
-          	agent.add('Great! Here is what I found:');
-        	agent.add('Restaurant - 9082');
-          	agent.add('Select the right business type:');
-          	agent.add(new Suggestion('Traditional Restaurant - 9082'));
-          	agent.add(new Suggestion('Fast Food Restaurant - 9083'));
-          	agent.add(new Suggestion('Alcohol Restaurant - 9084'));
-          	
-        }
-    
-    	else if (classc.toString().toLowerCase() == 'florist' ){
-          	agent.add('Great! Here is what I found:');
-        	agent.add('Florist - 8001');
-          	agent.add('Select the right business type:');
-          	agent.add(new Suggestion('Restaurant - 9082'));
-          	agent.add(new Suggestion('Florist - 8001'));
-          	
-        }
+    	return axios.get('http://calm-peak-72227.herokuapp.com/test/api/business_info/'+classc.toString())
+              .then((result) => {
+                console.log(result.data);
+           	    if(result.data.api_business_type.BusinessType.length >0){
 
-    	else{
-        	agent.add('Sorry, I cannot find a business type that matches your entry, please re-try with another keyword or class code ');
-        	agent.context.set({
+                    agent.add('Great! Here is what I found:');
+                    agent.add('Select the right business type:');
+           	        var j;
+           	        for(j=0; j< result.data.api_business_type.BusinessType.length; j++)
+                       agent.add(new Suggestion(result.data.api_business_type.BusinessType[j]));
+                }
+
+           		else{
+                    agent.add('Sorry, I cannot find a business type that matches your entry, please re-try with another keyword or class code ');
+        	        agent.context.set({
               'name':'locbusstype-followup'
               });
-        }
+                }
+           
+              });
+    	
   
     }
 
   
     function locpayroll(agent){
   
-        const payroll = agent.parameters['payroll-loc1']["amount"];
-        agent.add('Okay, you have entered '+ payroll.toString());
+        const payroll = agent.parameters['payroll-loc1'].amount;
+        //agent.add('Okay, you have entered '+ payroll.toString());
         
         const parameters = agent.context.get('locbusstype-followup');
         var buss_type = parameters.parameters['buss-type-loc1'];
@@ -1011,7 +1194,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
             
             dnum = dnum -1;  
             
-            agent.add(parameters1);
+            //agent.add(parameters1);
         
         }
         
@@ -1019,13 +1202,13 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
         //pass
         }
         
-        agent.add('Num location ' + dnum.toString());
-        agent.add(buss_type.toString());
+        //agent.add('Num location ' + dnum.toString());
+        //agent.add(buss_type.toString());
         
         if ((buss_type) != 0){
         
             buss_type = buss_type -1;
-            agent.add(buss_type.toString());
+            //agent.add(buss_type.toString());
         
             agent.context.set({'name': 'locbusstype-followup',
                                 'lifespan': 5,
@@ -1146,35 +1329,27 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
     function seclocclassc(agent){
   
   	    const classc = agent.parameters['secloc-classcode']; 
-    	
-    	if (classc.toString().toLowerCase() == 'restaurant'){
-          	agent.add('Great! Here is what I found:');
-        	agent.add('Restaurant - 9082');
-          	agent.add('Select the right business type:');
-          	agent.add(new Suggestion('Traditional Restaurant - 9082'));
-          	agent.add(new Suggestion('Fast Food Restaurant - 9083'));
-          	agent.add(new Suggestion('Alcohol Restaurant - 9084'));
-          	//agent.add(buss_type.toString());
-          	
-        }
-    
-    	else if (classc.toString().toLowerCase() == 'florist' ){
-          	agent.add('Great! Here is what I found:');
-        	agent.add('Florist - 8001');
-          	agent.add('Select the right business type:');
-          	agent.add(new Suggestion('Restaurant - 9082'));
-          	agent.add(new Suggestion('Florist - 8001'));
-          	
-        
-        }
+      	
+      	return axios.get('http://calm-peak-72227.herokuapp.com/test/api/business_info/'+classc.toString())
+              .then((result) => {
+                console.log(result.data);
+           	    if(result.data.api_business_type.BusinessType.length >0){
 
-    	else{
-        	agent.add('Sorry, I cannot find a business type that matches your entry, please re-try with another keyword or class code ');
-        	agent.context.set({
+                    agent.add('Great! Here is what I found:');
+                    agent.add('Select the right business type:');
+           	        var j;
+           	        for(j=0; j< result.data.api_business_type.BusinessType.length; j++)
+                       agent.add(new Suggestion(result.data.api_business_type.BusinessType[j]));
+                }
+
+           		else{
+                    agent.add('Sorry, I cannot find a business type that matches your entry, please re-try with another keyword or class code ');
+        	        agent.context.set({
               'name':'seclocbusstype-followup'
               });
-        }
-  
+                }
+           
+              });
   
     }
   
@@ -1200,21 +1375,21 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   
     function seclocpayroll(agent){
   
-        const payroll = agent.parameters['secloc-payroll']["amount"];
+        const payroll = agent.parameters['secloc-payroll'].amount;
         
-        agent.add('Okay, you have entered '+ payroll.toString());
+        //agent.add('Okay, you have entered '+ payroll.toString());
         
         const parameters = agent.context.get('seclocbusstype-followup');
         
         var seclocbusstype = parameters.parameters['secloc-busstype'] ;
         
-        agent.add(seclocbusstype.toString());
+        //agent.add(seclocbusstype.toString());
         
         const parameters1 = agent.context.get('numlocation-followup');
         
         var dnum_location = parameters1.parameters['num-location'];
     
-        agent.add('Num location'+ dnum_location.toString()); 
+        //agent.add('Num location'+ dnum_location.toString()); 
     
         if ((seclocbusstype) > 0){
 
@@ -1247,7 +1422,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
                 agent.add('Tell me the Location Name.');  
                 
                 
-                agent.add('Num location'+ dnum_location.toString());   
+                //agent.add('Num location'+ dnum_location.toString());   
             
             }
         
@@ -1315,7 +1490,9 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   intentMap.set('startdate',startdate);
   intentMap.set('payroll',payroll);
   intentMap.set('state-no',stateno);
+  intentMap.set('state-yes',stateyes);
   intentMap.set('activities-no1',activitiesno);
+  intentMap.set('activities-yes1',activitiesyes1);
   intentMap.set('EditNa',editna);
   intentMap.set('EditAdd', editadd);
   intentMap.set('EditAdd-no', editaddno);
@@ -1329,6 +1506,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   intentMap.set('Zip', zip);
   intentMap.set('BusinessNa',businessna);
   intentMap.set('me-yes',meyes);
+  intentMap.set('me-aq',meaq);
   intentMap.set('dba', dba);
   intentMap.set('bussedit',bussedit);
   intentMap.set('busseditna',busseditna);

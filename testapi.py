@@ -1,5 +1,5 @@
 ## Importing libraries
-from flask import Flask, Blueprint
+from flask import Flask, Blueprint, request
 from flask_restplus import Api, Resource, fields
 # import requests
 # import json
@@ -23,6 +23,8 @@ dic3 = {'restaurant':['Any seasonal employees?', 'Do employees travel out of sta
         'florist': ['Are employee health plans provided', 'Do you lease employees to or from other employers?'],
         }
 
+list_fein =  {}
+
 ##----------------------------------------Initializing the app-------------------------------##
 
 app = Flask(__name__)
@@ -44,6 +46,8 @@ b_api = api.model('crawldata', {'Name': fields.String('Name'), 'Phone': fields.S
 c_api = api.model('Quoteavailable', {'Quoteno': fields.String('Quoteno')})
 
 d_api = api.model('Activities', {'Activities': fields.List(fields.String('Activities'))})
+
+e_api = api.model('Data', {'Fein': fields.String('Activities')})
 
 ##-------------------------- Defining the url and thier functions ----------------------------------##
 
@@ -142,6 +146,19 @@ class business_info(Resource):
         ## returning data in the form mentioend in b_api
         return {'Activities': activities}
 
+
+@api.route('/business_info/storedata/<path:id>')
+class business_info(Resource):
+
+    @api.marshal_with(e_api, envelope='api_store_data')
+
+    def post(self, id):
+
+        list_fein[id] = request.json['name']
+
+        return {
+				"Fein": list_fein[id]
+			}
 
 @app.route('/')
 def index():
