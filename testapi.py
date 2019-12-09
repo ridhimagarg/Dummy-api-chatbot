@@ -154,11 +154,22 @@ class business_info(Resource):
 
     def post(self, id):
 
-        list_fein[id] = request.json['name']
+        list_fein[id] = request.json['fein']
 
         return {
 				"Fein": list_fein[id]
 			}
+
+    def get(self, id):
+
+        name = list_fein[id]
+
+        return {
+            //"status": "Person retrieved",
+            "Fein" : list_fein[id]
+        }
+
+
 
 @app.route('/')
 def index():
