@@ -156,6 +156,8 @@ class business_info(Resource):
 
     def post(self, id):
 
+        print(request.json())
+
         if(request.json['fein']):
 
             fein = request.json['fein']
