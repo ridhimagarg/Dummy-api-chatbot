@@ -23,7 +23,7 @@ dic3 = {'restaurant':['Any seasonal employees?', 'Do employees travel out of sta
         'florist': ['Are employee health plans provided', 'Do you lease employees to or from other employers?'],
         }
 
-list_fein =  {}
+list_data =  []
 
 list_name = {}
 
@@ -49,7 +49,7 @@ c_api = api.model('Quoteavailable', {'Quoteno': fields.String('Quoteno')})
 
 d_api = api.model('Activities', {'Activities': fields.List(fields.String('Activities'))})
 
-e_api = api.model('Data', {'Fein': fields.String('Activities'), 'Name': fields.String('Name')})
+e_api = api.model('Data', {'Fulldata': fields.List(fields.String('data')) })
 
 ##-------------------------- Defining the url and thier functions ----------------------------------##
 
@@ -158,10 +158,12 @@ class business_info(Resource):
 
         if(request.json['fein']):
 
-            list_fein[id] = request.json['fein']
+            fein = request.json['fein']
+
+            list_data.append(str({'fein': fein}))
 
             return {
-                    "Fein": list_fein[id]
+                    "Fulldata" : list_data
                 }
 
         else:
