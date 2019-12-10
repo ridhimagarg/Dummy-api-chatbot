@@ -156,17 +156,25 @@ class business_info(Resource):
 
     def post(self, id):
 
-        if(request.json['fein']):
+        if(request.json['name']):
 
-            fein = request.json['fein']
+            name = request.json['name']
 
-            list_data.append(str({'fein': fein}))
+            list_data.append({'name': name})
 
             return {
                     "Fulldata" : list_data
                 }
 
-        elif(request.json['name']):
+            '''fein = request.json['fein']
+
+            list_data.append(str({'fein': fein}))
+
+            return {
+                    "Fulldata" : list_data
+                }'''
+
+        else:
 
             name = request.json['name']
 
