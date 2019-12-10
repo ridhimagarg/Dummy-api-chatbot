@@ -168,10 +168,12 @@ class business_info(Resource):
 
         else:
 
-            list_name[id] = request.json['name']
+            name = request.json['name']
+
+            list_data.append(str({'name': name}))
 
             return {
-                    "Name": list_fein[id]
+                    "Fulldata" : list_data
                 }  
 
 
