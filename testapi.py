@@ -176,9 +176,9 @@ class business_info(Resource):
 
         else:
 
-            name = request.json['name']
+            name = request.json['fein']
 
-            list_data.append({'name': name})
+            list_data.append({'fein': name})
 
             return {
                     "Fulldata" : list_data
