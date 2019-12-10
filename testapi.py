@@ -166,7 +166,7 @@ class business_info(Resource):
                     "Fulldata" : list_data
                 }
 
-        else:
+        elif(request.json['name']):
 
             name = request.json['name']
 
