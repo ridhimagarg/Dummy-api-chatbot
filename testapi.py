@@ -170,7 +170,7 @@ class business_info(Resource):
 
             name = request.json['name']
 
-            list_data.append(str({'name': name}))
+            list_data.append({'name': name})
 
             return {
                     "Fulldata" : list_data
