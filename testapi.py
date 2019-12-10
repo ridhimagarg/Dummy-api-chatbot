@@ -25,6 +25,8 @@ dic3 = {'restaurant':['Any seasonal employees?', 'Do employees travel out of sta
 
 list_fein =  {}
 
+list_name = {}
+
 ##----------------------------------------Initializing the app-------------------------------##
 
 app = Flask(__name__)
@@ -47,7 +49,7 @@ c_api = api.model('Quoteavailable', {'Quoteno': fields.String('Quoteno')})
 
 d_api = api.model('Activities', {'Activities': fields.List(fields.String('Activities'))})
 
-e_api = api.model('Data', {'Fein': fields.String('Activities')})
+e_api = api.model('Data', {'Fein': fields.String('Activities'), 'Name': fields.String('Name')})
 
 ##-------------------------- Defining the url and thier functions ----------------------------------##
 
@@ -154,11 +156,22 @@ class business_info(Resource):
 
     def post(self, id):
 
-        list_fein[id] = request.json['fein']
+        if(request.json['fein']):
 
-        return {
-				"Fein": list_fein[id]
-			}
+            list_fein[id] = request.json['fein']
+
+            return {
+                    "Fein": list_fein[id]
+                }
+
+        else:
+
+            list_name[id] = request.json['name']
+
+            return {
+                    "Name": list_fein[id]
+                }  
+
 
     def get(self, id):
 
